@@ -51,12 +51,7 @@ void setup(){
 void loop(){
   if(Serial.available()){   
     delay(10);
-    //Для того чтобы отсеч лишнее из посылки с Arduino BT Joystick (Формат посылки: #b=*значение*#)
-    Serial.read(); //Пропустить #
-    Serial.read(); //Пропустить b
-    Serial.read(); //Пропустить =
-    btData = (char)Serial.read(); //Записать значение
-    Serial.read(); //Пропустить #
+    btData = Serial.read(); 
     
     //Сравниевает полученное значение
     switch(btData){
