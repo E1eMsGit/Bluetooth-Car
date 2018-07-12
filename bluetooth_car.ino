@@ -31,132 +31,75 @@ Car car(7, 8, 5, 3, 4, 6); // Объект класса Car (пины к кот�
 Servo horizontalServo;
 Servo verticalServo; 
 
-
-char btData; //Переменная для приема данных по bluetooth.
+char rcvData;
 int horizontalServoValue = 70;
 int verticalServoValue = 70;
 int motorSpeed = 175;
 
-void setup(){
-  Serial.begin(115200);
-  horizontalServo.attach(HORIZONTAL_SERVO);
-  verticalServo.attach(VERTICAL_SERVO);
-
-  horizontalServo.write(horizontalServoValue);
-  verticalServo.write(verticalServoValue);
-
-  car.setMotorsSpeed(motorSpeed, motorSpeed);
+void setup() {
+    Serial.begin(115200);
+    horizontalServo.attach(HORIZONTAL_SERVO);
+    verticalServo.attach(VERTICAL_SERVO);
+    
+    horizontalServo.write(horizontalServoValue);
+    verticalServo.write(verticalServoValue);
+    car.setMotorsSpeed(motorSpeed, motorSpeed);
 }
 
-void loop(){
-  if(Serial.available()){   
-    delay(10);
-    btData = Serial.read(); 
-    
-    //Сравниевает полученное значение
-    switch(btData){
-      case '0': //Ничего не нажато. Стоит.
-        car.stand();
-        break;
-      case '1': //Стрелка вверх. Едет вперед.
-        car.forward();
-        break;
-      case '2': //Стрелка вниз. Едет назад.
-        car.backward();
-        break;
-      case '3': //Стрелка влево. Поворачивает налево.
-        car.forwardLeft();
-        break;
-      case '4': //Стрелка вправо. Поворачивает направо.
-        car.forwardRight();
-        break;
-      case '5': //Select. Уменьшает скорость вращения моторов.
-        regulMotorSpeed('-');
-        break;
-      case '6': //Start. Увеличивает скорость вращения моторов.
-        regulMotorSpeed('+');
-        break;
-      case '7': //Треугольник. Вращает севро вправо.
-        horizontalServoSpin('+');
-        break;
-      case '8': //Квадрат. Вращает севро влево.
-        horizontalServoSpin('-');
-        break;
-      case '9': //Крестик. Вращает севро вниз.
-        verticalServoSpin('+');
-        break;
-      case 'A'://Кружок. Вращает севро вверх.
-        verticalServoSpin('-');
-        break;  
-    }    
-  }                                     
+void loop() {
+    if(Serial.available()) {
+        delay(10);
+        rcvData = Serial.read(); 
+        
+        //Сравниевает полученное значение
+        switch (rcvData) {
+            //Ничего не нажато. Стоит.
+            case '0': car.stand(); break;
+            //Стрелка вверх. Едет вперед.
+            case '1': car.forward(); break;
+             //Стрелка вниз. Едет назад.
+            case '2': car.backward(); break;
+            //Стрелка влево. Поворачивает налево.
+            case '3': car.forwardLeft(); break;
+            //Стрелка вправо. Поворачивает направо.
+            case '4': car.forwardRight(); break;
+            //Select. Уменьшает скорость вращения моторов.
+            case '5': regulMotorSpeed(-25); break;
+            //Start. Увеличивает скорость вращения моторов.
+            case '6': regulMotorSpeed(25); break;
+            //Треугольник. Вращает севро вправо.
+            case '7': horizontalServoSpin(5); break;
+            //Квадрат. Вращает севро влево.
+            case '8': horizontalServoSpin(-5); break;
+            //Крестик. Вращает севро вниз.
+            case '9': verticalServoSpin(5); break;
+            //Кружок. Вращает севро вверх.
+            case 'A': verticalServoSpin(-5); break;  
+        }    
+    }                                     
 }
 
 //************************ ПОЛЬЗОВАТЕЛЬСКИЕ ФУНКЦИИ ************************
 // Вращает горизонтальный серво.
-void horizontalServoSpin(char operation){
-  if (operation == '+'){
-    if (horizontalServoValue > 150){
-      horizontalServoValue = 150;
-    }
-    else{
-      horizontalServoValue += 5;
-      horizontalServo.write(horizontalServoValue);
-    }
-  } 
-  else if (operation == '-'){
-    if (horizontalServoValue < 10){
-      horizontalServoValue = 10;
-    }
-    else{
-      horizontalServoValue -= 5;
-      horizontalServo.write(horizontalServoValue); 
-    }
-  }
+void horizontalServoSpin(int value) {
+    horizontalServoValue += value;
+    if (horizontalServoValue > 150) horizontalServoValue = 150;
+    else if (horizontalServoValue < 10) horizontalServoValue = 10;
+    horizontalServo.write(horizontalServoValue);
 }
 
 // Вращает вертикальный серво.
-void verticalServoSpin(char operation){
-  if (operation == '+'){
-    if (verticalServoValue > 90){
-      verticalServoValue = 90;
-    }
-    else{
-      verticalServoValue += 5;
-      verticalServo.write(verticalServoValue);
-    }
-  } 
-  else if (operation == '-'){
-    if (verticalServoValue < 30){
-      verticalServoValue = 30;  
-    }
-    else{
-      verticalServoValue -= 5;
-      verticalServo.write(verticalServoValue); 
-    }
-  }
+void verticalServoSpin(int value) {
+    verticalServoValue += value;
+    if (verticalServoValue > 90) verticalServoValue = 90;
+    else if (verticalServoValue < 30) verticalServoValue = 30;  
+    verticalServo.write(verticalServoValue);
 }
 
 // Регулирует скорость вращения моторов.
-void regulMotorSpeed(char operation){
-  if (operation == '+'){
-    if (motorSpeed > 250){
-      motorSpeed = 250;
-      car.setMotorsSpeed(motorSpeed, motorSpeed);  
-    }
-    else{
-      motorSpeed += 25;
-      car.setMotorsSpeed(motorSpeed, motorSpeed);
-    }
-  } 
-  else if (operation == '-'){
-    if (motorSpeed < 100){
-      motorSpeed = 100;
-      car.setMotorsSpeed(motorSpeed, motorSpeed);
-    }
-    else{
-      motorSpeed -= 25;
-      car.setMotorsSpeed(motorSpeed, motorSpeed); 
-    }
-  }
+void regulMotorSpeed(int value) {
+    motorSpeed += value;
+    if (motorSpeed > 250) motorSpeed = 250; 
+    else if (motorSpeed < 100) motorSpeed = 100;
+    car.setMotorsSpeed(motorSpeed, motorSpeed); 
 }

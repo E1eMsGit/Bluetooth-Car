@@ -26,8 +26,10 @@ void Car::setMotorsSpeed(int leftMotorSpeed, int rightMotorSpeed)
 // Движение вперед.
 void Car::forward()
 {
+  // Левые колеса вращаются вперед.
   digitalWrite (motorL1_, HIGH);
   digitalWrite (motorL2_, LOW);
+  // Правые колеса вращаются вперед.
   digitalWrite (motorR1_, HIGH);
   digitalWrite (motorR2_, LOW);
 }
@@ -79,8 +81,10 @@ void Car::right()
 // Движение назад.
 void Car::backward()
 {
+  // Левые колеса вращаются назад.
   digitalWrite (motorL1_, LOW);
   digitalWrite (motorL2_, HIGH);
+  // Правые колеса вращаются назад.
   digitalWrite (motorR1_, LOW);
   digitalWrite (motorR2_, HIGH);
 }
@@ -88,8 +92,10 @@ void Car::backward()
 // Движение назад с поворотом налево.
 void Car::backwardLeft()
 {
+  // Блокируем вращение левых колес.
   digitalWrite (motorL1_, LOW);
   digitalWrite (motorL2_, LOW);
+  // Правые колеса вращаются назад.
   digitalWrite (motorR1_, LOW);
   digitalWrite (motorR2_, HIGH);
 }
@@ -97,8 +103,10 @@ void Car::backwardLeft()
 // Движение назад с поворотом направо.
 void Car::backwardRight()
 {
+  // Левые колеса вращаются назад.
   digitalWrite (motorL1_, LOW);
   digitalWrite (motorL2_, HIGH);
+  // Блокируем вращение правых колес.
   digitalWrite (motorR1_, LOW);
   digitalWrite (motorR2_, LOW);
 }
@@ -106,8 +114,10 @@ void Car::backwardRight()
 // Стоп.
 void Car::stand()
 {
+  // Блокируем вращение левых колес.
   digitalWrite (motorL1_, LOW);
   digitalWrite (motorL2_, LOW);
+  // Блокируем вращение правых колес.
   digitalWrite (motorR1_, LOW);
   digitalWrite (motorR2_, LOW);
 }
